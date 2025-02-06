@@ -1,0 +1,19 @@
+---
+# tasks file for vector-role
+- name: Install Vector Package Directly From The Repository
+  ansible.builtin.yum:
+    name: "https://yum.vector.dev/stable/vector-0/x86_64/vector-{{ vector_rpm_version }}.x86_64.rpm"
+    disable_gpg_check: true
+  notify: Restart Vector Service
+
+- name: Replace Vector Configuration File
+  ansible.builtin.template:
+    src: vector.toml.j2
+    dest: /etc/vector/vector.yaml
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Restart Vector Service
+
+- name: Flush Handlers
+  ansible.builtin.meta: flush_handlers
